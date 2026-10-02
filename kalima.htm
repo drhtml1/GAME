@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#edf3ed">
+    <meta name="description" content="خمسة: تحدّي الكلمات العربي اليومي. خمن الكلمة في ست محاولات وشارك نتيجتك.">
+    <title>خمسة | تحدّي الكلمات العربي</title>
+    <link rel="stylesheet" href="kalima.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="topbar">
+            <a class="wordmark" href="#top" aria-label="خمسة، الرئيسية"><span class="wordmark-tile">خ</span><span>خَمْسَة</span></a>
+            <div class="top-actions">
+                <button class="icon-button" id="helpButton" type="button" aria-label="طريقة اللعب" title="طريقة اللعب"><span aria-hidden="true">؟</span></button>
+                <button class="icon-button" id="statsButton" type="button" aria-label="إحصاءاتي" title="إحصاءاتي"><span aria-hidden="true">▤</span></button>
+            </div>
+        </header>
+
+        <main id="top">
+            <section class="intro">
+                <div class="intro-copy">
+                    <p class="eyebrow"><span class="today-dot"></span> تحدّي الكلمات العربي <span class="eyebrow-rule"></span><span id="dateLabel"></span></p>
+                    <h1>فكّر فيها. <em>خمّنها.</em></h1>
+                    <p class="intro-subtitle">فريقان، كلمة واحدة، وست محاولات لكل فريق. الكلمة العربية من خمسة أحرف.</p>
+                </div>
+                <div class="intro-stamp" aria-hidden="true"><span>٥</span><small>أحرف<br>فقط</small></div>
+            </section>
+
+            <nav class="mode-switch" aria-label="نوع التحدي">
+                <button class="mode-tab is-active" id="dailyTab" type="button" aria-pressed="true">كلمة اليوم <span class="tab-spark">✳</span></button>
+                <button class="mode-tab" id="practiceTab" type="button" aria-pressed="false">تدريب</button>
+            </nav>
+
+            <div class="play-layout">
+                <section class="puzzle-area" aria-label="لوحة التخمين">
+                    <div class="puzzle-heading">
+                        <div><span class="section-index" id="challengeIndex">تحدّي اليوم</span><h2 id="challengeTitle">من سيحلّها أولاً؟</h2></div>
+                        <div class="attempt-counter"><strong id="turnLabel">الفريق ١</strong><small>الدور الآن</small></div>
+                    </div>
+
+                    <div class="team-boards">
+                        <section class="team-card is-active" id="teamCard0" aria-label="لوحة الفريق الأول">
+                            <div class="team-heading"><label class="team-name-label" for="teamName0">الفريق الأول</label><input class="team-name-input" id="teamName0" maxlength="18" value="فريق الصقور" aria-label="اسم الفريق الأول"><span class="team-score" id="teamScore0">٠/٦</span></div>
+                            <div class="board" id="board0" role="grid" aria-label="تخمينات الفريق الأول" aria-live="polite"></div>
+                            <p class="team-result" id="teamResult0" aria-live="polite">ينتظر دوره</p>
+                        </section>
+                        <section class="team-card" id="teamCard1" aria-label="لوحة الفريق الثاني">
+                            <div class="team-heading"><label class="team-name-label" for="teamName1">الفريق الثاني</label><input class="team-name-input" id="teamName1" maxlength="18" value="فريق النسور" aria-label="اسم الفريق الثاني"><span class="team-score" id="teamScore1">٠/٦</span></div>
+                            <div class="board" id="board1" role="grid" aria-label="تخمينات الفريق الثاني" aria-live="polite"></div>
+                            <p class="team-result" id="teamResult1" aria-live="polite">ينتظر دوره</p>
+                        </section>
+                    </div>
+                    <p class="message-line" id="messageLine" aria-live="polite">اكتب كلمة من خمسة أحرف ثم اضغط إدخال.</p>
+
+                    <div class="puzzle-actions">
+                        <button class="share-button" id="shareButton" type="button" disabled><span aria-hidden="true">↗</span> شارك النتيجة</button>
+                        <button class="reset-button" id="newPracticeButton" type="button" hidden>كلمة تدريب جديدة <span aria-hidden="true">↻</span></button>
+                        <span class="daily-note" id="dailyNote">كلمة جديدة كل يوم</span>
+                    </div>
+
+                    <div class="keyboard" id="keyboard" aria-label="لوحة المفاتيح العربية"></div>
+                </section>
+
+                <aside class="side-rail">
+                    <section class="daily-panel" aria-labelledby="dailyPanelTitle">
+                        <div class="panel-topline"><span class="panel-kicker">مواجهة اليوم</span><span class="panel-mark">فريقان</span></div>
+                        <h2 id="dailyPanelTitle">نفس الكلمة،<br><em>فرصتان للفوز.</em></h2>
+                        <p>بدّلوا الأدوار بعد كل محاولة. الفريق الذي يحلّ الكلمة بأقل تخمينات يفوز.</p>
+                        <div class="countdown-row"><span>التحدّي القادم</span><strong id="countdown">--:--:--</strong></div>
+                        <div class="countdown-track"><span></span></div>
+                    </section>
+
+                    <section class="stats-panel" aria-labelledby="statsTitle">
+                        <div class="rail-heading"><h2 id="statsTitle">نتائج الفريقين</h2><span class="streak-flame">✦</span></div>
+                        <div class="stats-grid">
+                            <div><strong id="winStat0">٠</strong><span id="teamLabel0">الصقور</span></div>
+                            <div><strong id="tieStat">٠</strong><span>تعادل</span></div>
+                            <div><strong id="winStat1">٠</strong><span id="teamLabel1">النسور</span></div>
+                        </div>
+                        <div class="distribution-title" id="playedStat">٠ مواجهات مكتملة</div>
+                    </section>
+
+                    <div class="community-note"><span class="community-mark">✳</span><p>لا حرق للحل.<br><strong>شارك مربعاتك فقط.</strong></p></div>
+                </aside>
+            </div>
+        </main>
+
+        <footer class="page-footer"><span>خمسة أحرف. ست محاولات. كل يوم كلمة جديدة.</span><span class="footer-asterisk">✳</span><span>صُنعت لمحبي اللغة.</span></footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <dialog class="info-dialog" id="helpDialog">
+        <form method="dialog"><button class="dialog-close" aria-label="إغلاق">×</button></form>
+        <p class="dialog-eyebrow">كيف تلعب؟</p>
+        <h2>خمّن الكلمة في ست محاولات</h2>
+        <p>كوّنوا فريقين وأدخلوا أسماءهم. بعد كل كلمة صحيحة من خمسة أحرف ينتقل الدور للفريق الآخر، ويتغيّر لون المربعات كتلميح.</p>
+        <div class="example-row"><span class="example-tile is-correct">س</span><p>الحرف في مكانه الصحيح.</p></div>
+        <div class="example-row"><span class="example-tile is-present">و</span><p>الحرف موجود، لكن مكانه مختلف.</p></div>
+        <div class="example-row"><span class="example-tile is-absent">م</span><p>الحرف غير موجود في الكلمة.</p></div>
+        <p class="dialog-footnote">لكل فريق ست محاولات مستقلة. بعد انتهاء الفريقين، يفوز من حلّها بمحاولات أقل.</p>
+        <form method="dialog"><button class="dialog-primary">واضح، لنبدأ</button></form>
+    </dialog>
+
+    <dialog class="info-dialog stats-dialog" id="statsDialog">
+        <form method="dialog"><button class="dialog-close" aria-label="إغلاق">×</button></form>
+        <p class="dialog-eyebrow">نتائج المواجهات</p>
+        <h2>أيّ فريق يتقدّم؟</h2>
+        <div class="modal-stats"><div><strong id="modalWins0">٠</strong><span>الصقور</span></div><div><strong id="modalTies">٠</strong><span>تعادل</span></div><div><strong id="modalWins1">٠</strong><span>النسور</span></div></div>
+        <p class="dialog-footnote" id="statsMessage">ابدأوا أول مواجهة وسجّلوا أسماء الفريقين.</p>
+        <form method="dialog"><button class="dialog-primary">عودة للعبة</button></form>
+    </dialog>
+
+    <script>
+        (() => {
+            const solutions = ['مدرسة', 'سيارة', 'حكاية', 'مدينة', 'بحيرة', 'سعادة', 'رسالة', 'حديقة', 'منارة', 'رحالة', 'مطرقة', 'قافلة', 'سحابة', 'مكتبة', 'بداية', 'نهاية', 'مسافة', 'فراشة', 'عائلة', 'شجاعة', 'صندوق', 'ميدان', 'أحلام', 'أنغام', 'رياضة', 'مفتاح', 'مركبة', 'دراجة', 'سفينة', 'أميرة', 'عصفور', 'تعليم', 'تفاحة', 'تاريخ', 'كتابة', 'نظارة', 'بستان', 'عنوان', 'تجربة', 'مغامر', 'أسلوب', 'مراحل', 'أوقات', 'مناظر', 'مشوار', 'ألوان', 'أفكار', 'طبيعة', 'تعاون', 'منافس', 'مقدار', 'تغيير', 'تفكير', 'مشاهد', 'تمرين', 'أدوات', 'طيارة', 'قريبة', 'جريمة', 'سريعة', 'مميزة', 'أنيقة', 'حقيقة', 'مسؤول', 'مكتشف', 'مستقبل', 'مناسبة', 'مشاركة', 'متحفز', 'مشاعر', 'ملعقة', 'كراسة', 'بوصلة', 'مرجان', 'مخزون', 'أسرار', 'أجراس', 'حروف', 'مبدعة', 'مغارة', 'فريدة', 'واسعة', 'مضيئة', 'عميقة', 'حمراء', 'خضراء', 'زرقاء', 'خاطرة', 'قصيدة', 'مقالة', 'حكومة', 'سريعة', 'مركاز'];
+            const extraWords = ['اجتماع', 'ابتكار', 'اختيار', 'اقتراح', 'اكتشاف', 'استراحة', 'استفادة', 'اعتذار', 'انتظار', 'انطلاق', 'انتصار', 'انتباه', 'انخفاض', 'ارتفاع', 'احتمال', 'احترام', 'اقتصاد', 'التزام', 'احتفال', 'برمجة', 'بطولة', 'بشارة', 'بصيرة', 'تحديات', 'تجارب', 'تراث', 'تساؤل', 'تسلسل', 'تطوير', 'تصميم', 'تنظيم', 'توازن', 'تفاصيل', 'تلخيص', 'ثقافة', 'جمهور', 'جامعة', 'جداول', 'جائزة', 'جسارة', 'جغرافيا', 'جمهرة', 'حضور', 'حقيقة', 'حيوية', 'خريطة', 'خليفة', 'ذكيّة', 'رائعة', 'رحلات', 'رواية', 'زيارة', 'زخرفة', 'ساحرة', 'سريعة', 'شاعر', 'شوارع', 'صناعة', 'صورة', 'ضيافة', 'طائرة', 'عاصمة', 'عبارة', 'عتيقة', 'غريبة', 'فكرة', 'فريق', 'فواكه', 'قانون', 'قراءة', 'قصة', 'قواعد', 'كتابة', 'لعبة', 'لغة', 'لياقة', 'مجتمع', 'مجموعة', 'محتوى', 'مخرج', 'مدارس', 'مدونة', 'مركز', 'مسابقة', 'مسافر', 'مسرح', 'مشروع', 'مصدر', 'معرفة', 'مفردات', 'مكتوب', 'ملعب', 'موسيقى', 'نشيط', 'نشاط', 'نظام', 'واجهة', 'وسيلة'];
+            const normalize = value => value.normalize('NFC').replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي');
+            const answerList = [...new Set([...solutions, ...extraWords].map(normalize).filter(word => Array.from(word).length === 5))];
+            const validGuess = word => /^[\u0621-\u064A]{5}$/.test(word);
+            const keyboardRows = ['ض ص ث ق ف غ ع ه خ ح ج د', 'ش س ي ب ل ا ت ن م ك ط', 'ئ ء ؤ ر ى ة و ز ظ ذ'];
+            const dateKey = new Date().toISOString().slice(0, 10);
+            const dayNumber = Math.floor(Date.now() / 86400000);
+            const dailyAnswer = answerList[dayNumber % answerList.length];
+            const dailyStorageKey = `khamsa-daily-${dateKey}`;
+            const statisticsKey = 'khamsa-team-stats-v1';
+            const boards = [document.getElementById('board0'), document.getElementById('board1')];
+            const keyboard = document.getElementById('keyboard');
+            const messageLine = document.getElementById('messageLine');
+            const attemptCount = document.getElementById('attemptCount');
+            const shareButton = document.getElementById('shareButton');
+            const newPracticeButton = document.getElementById('newPracticeButton');
+            const toast = document.getElementById('toast');
+            const glyph = value => Array.from(value);
+            const arabicDigits = value => String(value).replace(/[0-9]/g, digit => '٠١٢٣٤٥٦٧٨٩'[Number(digit)]);
+            let mode = 'daily';
+            let practiceAnswer = '';
+            let teams = [0, 1].map(index => ({
+                name: localStorage.getItem(`khamsa-team-name-${index}`) || (index === 0 ? 'فريق الصقور' : 'فريق النسور'),
+                guesses: [],
+                input: '',
+                solved: false
+            }));
+            let activeTeam = 0;
+            let finished = false;
+            let winner = null;
+            let locked = false;
+            let currentInput = '';
+            let toastTimeout;
+            let gameStats = loadStats();
+            const keyboardState = new Map();
+
+            function loadStats() {
+                try {
+                    return JSON.parse(localStorage.getItem(statisticsKey)) || { played: 0, wins: [0, 0], ties: 0 };
+                } catch {
+                    return { played: 0, wins: [0, 0], ties: 0 };
+                }
+            }
+
+            function currentAnswer() {
+                return mode === 'daily' ? dailyAnswer : practiceAnswer;
+            }
+
+            function loadDaily() {
+                try {
+                    const saved = JSON.parse(localStorage.getItem(dailyStorageKey));
+                    if (saved && Array.isArray(saved.teams)) {
+                        teams.forEach((team, index) => {
+                            team.guesses = (saved.teams[index]?.guesses || []).slice(0, 6).filter(validGuess);
+                            team.solved = team.guesses.at(-1) === dailyAnswer;
+                        });
+                        activeTeam = saved.activeTeam === 1 ? 1 : 0;
+                        finished = Boolean(saved.finished);
+                        winner = saved.winner ?? null;
+                    } else {
+                        teams.forEach(team => { team.guesses = []; team.input = ''; team.solved = false; });
+                        activeTeam = 0;
+                        finished = false;
+                        winner = null;
+                    }
+                } catch {
+                    teams.forEach(team => { team.guesses = []; team.input = ''; team.solved = false; });
+                    activeTeam = 0;
+                    finished = false;
+                    winner = null;
+                }
+                renderBoard();
+                renderKeyboard();
+                updateGameLabels();
+            }
+
+            function saveDaily() {
+                if (mode === 'daily') localStorage.setItem(dailyStorageKey, JSON.stringify({ teams: teams.map(team => ({ guesses: team.guesses })), activeTeam, finished, winner }));
+            }
+
+            function makeBoard() {
+                boards.forEach(board => {
+                    board.replaceChildren();
+                    for (let row = 0; row < 6; row++) {
+                        const rowElement = document.createElement('div');
+                        rowElement.className = 'guess-row';
+                        rowElement.setAttribute('role', 'row');
+                        for (let column = 0; column < 5; column++) {
+                            const tile = document.createElement('div');
+                            tile.className = 'tile';
+                            tile.setAttribute('role', 'gridcell');
+                            rowElement.append(tile);
+                        }
+                        board.append(rowElement);
+                    }
+                });
+            }
+
+            function makeKeyboard() {
+                keyboard.replaceChildren();
+                keyboardRows.forEach((letters, rowIndex) => {
+                    const row = document.createElement('div');
+                    row.className = 'key-row';
+                    if (rowIndex === 2) row.append(makeKey('Backspace', 'حذف', 'key-delete'));
+                    glyph(letters.replaceAll(' ', '')).forEach(letter => row.append(makeKey(letter, letter, '')));
+                    if (rowIndex === 2) row.append(makeKey('Enter', 'إدخال', 'key-enter'));
+                    keyboard.append(row);
+                });
+            }
+
+            function makeKey(value, label, className) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = `key ${className}`.trim();
+                button.textContent = label;
+                button.setAttribute('aria-label', value === 'Backspace' ? 'حذف آخر حرف' : value === 'Enter' ? 'إدخال الكلمة' : `حرف ${label}`);
+                button.dataset.key = value;
+                button.addEventListener('click', () => handleKey(value));
+                return button;
+            }
+
+            function renderBoard() {
+                boards.forEach((board, teamIndex) => {
+                    board.querySelectorAll('.guess-row').forEach((row, rowIndex) => {
+                        const tiles = row.querySelectorAll('.tile');
+                        const team = teams[teamIndex];
+                        const guess = team.guesses[rowIndex];
+                        const active = teamIndex === activeTeam && rowIndex === team.guesses.length && !finished;
+                        const letters = guess ? glyph(guess) : active ? glyph(team.input) : [];
+                        const marks = guess ? scoreGuess(guess, currentAnswer()) : [];
+                        tiles.forEach((tile, columnIndex) => {
+                            tile.className = 'tile';
+                            const letter = letters[columnIndex] || '';
+                            tile.textContent = letter;
+                            if (letter) tile.classList.add('has-letter');
+                            if (guess) {
+                                tile.classList.add(`is-${marks[columnIndex]}`);
+                                tile.style.setProperty('--reveal-delay', `${columnIndex * 90}ms`);
+                                tile.setAttribute('aria-label', `${letter}: ${marks[columnIndex] === 'correct' ? 'مكان صحيح' : marks[columnIndex] === 'present' ? 'موجود في الكلمة' : 'غير موجود'}`);
+                            } else {
+                                tile.removeAttribute('aria-label');
+                            }
+                        });
+                    });
+                });
+                updateTeamPanels();
+            }
+
+            function scoreGuess(guess, answer) {
+                const letters = glyph(guess);
+                const target = glyph(answer);
+                const result = Array(5).fill('absent');
+                const remaining = new Map();
+                letters.forEach((letter, index) => {
+                    if (letter === target[index]) result[index] = 'correct';
+                    else remaining.set(target[index], (remaining.get(target[index]) || 0) + 1);
+                });
+                letters.forEach((letter, index) => {
+                    if (result[index] === 'correct') return;
+                    if ((remaining.get(letter) || 0) > 0) {
+                        result[index] = 'present';
+                        remaining.set(letter, remaining.get(letter) - 1);
+                    }
+                });
+                return result;
+            }
+
+            function renderKeyboard() {
+                const states = new Map();
+                teams.forEach(team => {
+                    team.guesses.forEach(guess => {
+                        glyph(guess).forEach((letter, index) => {
+                            const mark = scoreGuess(guess, currentAnswer())[index];
+                            const rank = { absent: 1, present: 2, correct: 3 };
+                            if (!states.has(letter) || rank[mark] > rank[states.get(letter)]) states.set(letter, mark);
+                        });
+                    });
+                });
+                keyboardState.clear();
+                states.forEach((value, key) => keyboardState.set(key, value));
+                keyboard.querySelectorAll('.key').forEach(button => {
+                    button.classList.remove('is-correct', 'is-present', 'is-absent');
+                    const state = keyboardState.get(normalize(button.dataset.key));
+                    if (state) button.classList.add(`is-${state}`);
+                });
+            }
+
+            function handleKey(key) {
+                if (locked || finished || !isTeamActive(teams[activeTeam])) return;
+                if (key === 'Enter') {
+                    submitGuess();
+                    return;
+                }
+                if (key === 'Backspace') {
+                    teams[activeTeam].input = glyph(teams[activeTeam].input).slice(0, -1).join('');
+                    renderBoard();
+                    return;
+                }
+                const letter = normalize(key);
+                if (/^[\u0621-\u064A]$/.test(letter) && glyph(teams[activeTeam].input).length < 5) {
+                    teams[activeTeam].input += letter;
+                    renderBoard();
+                }
+            }
+
+            function submitGuess() {
+                const team = teams[activeTeam];
+                const guess = normalize(team.input);
+                if (glyph(guess).length !== 5) {
+                    showMessage('تحتاج الكلمة إلى خمسة أحرف.', 'error');
+                    return;
+                }
+                if (!validGuess(guess)) {
+                    showMessage('استخدم الحروف العربية فقط.', 'error');
+                    return;
+                }
+                locked = true;
+                team.guesses.push(guess);
+                team.input = '';
+                team.solved = guess === currentAnswer();
+                const previousTeam = activeTeam;
+                const nextTeam = previousTeam === 0 ? 1 : 0;
+                activeTeam = isTeamActive(teams[nextTeam]) ? nextTeam : isTeamActive(teams[previousTeam]) ? previousTeam : nextTeam;
+                finished = teams.every(candidate => !isTeamActive(candidate));
+                if (finished) winner = getWinner();
+                renderBoard();
+                renderKeyboard();
+                saveDaily();
+                if (finished) {
+                    if (mode === 'daily') recordDailyResult(winner);
+                    shareButton.disabled = false;
+                    if (mode === 'practice') newPracticeButton.hidden = false;
+                }
+                window.setTimeout(() => {
+                    locked = false;
+                    if (finished) showMessage(winner === null ? 'تعادل! لم يحلّها أيّ من الفريقين.' : `الفائز: ${teams[winner].name}!`, 'success');
+                    else if (team.solved) showMessage(`${team.name} عرف الكلمة. أكمل الفريق الآخر للمقارنة.`, 'success');
+                    else if (team.guesses.length === 6) showMessage(`${team.name} استنفد محاولاته. الدور للفريق الآخر.`, 'error');
+                    else showMessage(`الدور الآن: ${teams[activeTeam].name}.`, '');
+                    updateGameLabels();
+                    updateStatistics();
+                }, 610);
+            }
+
+            function isTeamActive(team) {
+                return !team.solved && team.guesses.length < 6;
+            }
+
+            function getWinner() {
+                const [first, second] = teams;
+                if (first.solved && second.solved) {
+                    if (first.guesses.length === second.guesses.length) return null;
+                    return first.guesses.length < second.guesses.length ? 0 : 1;
+                }
+                if (first.solved) return 0;
+                if (second.solved) return 1;
+                return null;
+            }
+
+            function recordDailyResult(winningTeam) {
+                if (localStorage.getItem(`khamsa-result-${dateKey}`)) return;
+                gameStats.played += 1;
+                if (winningTeam === null) gameStats.ties += 1;
+                else gameStats.wins[winningTeam] += 1;
+                localStorage.setItem(statisticsKey, JSON.stringify(gameStats));
+                localStorage.setItem(`khamsa-result-${dateKey}`, winningTeam === null ? 'tie' : String(winningTeam));
+            }
+
+            function updateGameLabels() {
+                const isDaily = mode === 'daily';
+                document.getElementById('challengeIndex').textContent = isDaily ? `تحدّي ${arabicDigits(dayNumber % 1000)}` : 'وضع التدريب';
+                document.getElementById('challengeTitle').textContent = finished ? winner === null ? 'انتهت المواجهة بالتعادل' : `فاز ${teams[winner].name}` : 'من سيحلّها أولاً؟';
+                document.getElementById('dailyNote').textContent = isDaily ? 'كلمة جديدة كل يوم' : 'تدرّب على راحتك';
+                shareButton.disabled = !finished;
+                newPracticeButton.hidden = isDaily;
+                document.getElementById('dailyTab').classList.toggle('is-active', isDaily);
+                document.getElementById('dailyTab').setAttribute('aria-pressed', String(isDaily));
+                document.getElementById('practiceTab').classList.toggle('is-active', !isDaily);
+                document.getElementById('practiceTab').setAttribute('aria-pressed', String(!isDaily));
+                updateTeamPanels();
+                if (finished && winner !== null) showMessage(`الفائز: ${teams[winner].name}! الكلمة: «${glyph(currentAnswer()).join('')}».`, 'success');
+                else if (finished) showMessage(`تعادل! الكلمة كانت «${glyph(currentAnswer()).join('')}».`, 'error');
+                else if (!teams.some(team => team.guesses.length)) {
+                    showMessage('اكتب كلمة من خمسة أحرف ثم اضغط إدخال.', '');
+                } else {
+                    showMessage(`الدور الآن: ${teams[activeTeam].name}.`, '');
+                }
+            }
+
+            function updateTeamPanels() {
+                teams.forEach((team, index) => {
+                    const nameInput = document.getElementById(`teamName${index}`);
+                    nameInput.value = team.name;
+                    document.getElementById(`teamCard${index}`).classList.toggle('is-active', !finished && index === activeTeam && isTeamActive(team));
+                    document.getElementById(`teamScore${index}`).textContent = `${arabicDigits(team.guesses.length)}/٦`;
+                    const result = document.getElementById(`teamResult${index}`);
+                    if (finished) result.textContent = winner === index ? 'الفائز بالمواجهة' : winner === null ? 'تعادل' : 'انتهت المواجهة';
+                    else if (team.solved) result.textContent = `حلّها في ${arabicDigits(team.guesses.length)} محاولات`;
+                    else if (team.guesses.length === 6) result.textContent = 'انتهت المحاولات';
+                    else result.textContent = index === activeTeam ? 'الدور الآن' : 'ينتظر دوره';
+                });
+                document.getElementById('turnLabel').textContent = finished ? winner === null ? 'تعادل' : `فريق ${arabicDigits(winner + 1)}` : `فريق ${arabicDigits(activeTeam + 1)}`;
+            }
+
+            function setMode(nextMode) {
+                if (mode === nextMode) return;
+                mode = nextMode;
+                if (mode === 'daily') {
+                    loadDaily();
+                } else {
+                    practiceAnswer = answerList[Math.floor(Math.random() * answerList.length)];
+                    teams.forEach(team => { team.guesses = []; team.input = ''; team.solved = false; });
+                    activeTeam = 0;
+                    finished = false;
+                    winner = null;
+                    renderBoard();
+                    renderKeyboard();
+                    updateGameLabels();
+                }
+                updateGameLabels();
+            }
+
+            function startNewPractice() {
+                practiceAnswer = answerList[Math.floor(Math.random() * answerList.length)];
+                teams.forEach(team => { team.guesses = []; team.input = ''; team.solved = false; });
+                activeTeam = 0;
+                finished = false;
+                winner = null;
+                renderBoard();
+                renderKeyboard();
+                updateGameLabels();
+            }
+
+            function makeShareText() {
+                const challenge = mode === 'daily' ? `خمسة ${dayNumber % 1000}` : 'خمسة تدريب';
+                const results = teams.map(team => {
+                    const score = team.solved ? arabicDigits(team.guesses.length) : 'X';
+                    const rows = team.guesses.map(guess => scoreGuess(guess, currentAnswer()).map(mark => mark === 'correct' ? '🟩' : mark === 'present' ? '🟨' : '⬛').join('')).join('\n');
+                    return `${team.name} ${score}/6\n${rows}`;
+                }).join('\n\n');
+                const outcome = winner === null ? 'تعادل' : `الفائز: ${teams[winner].name}`;
+                return `${challenge}\n${outcome}\n\n${results}\n\nخمسة | تحدّي الكلمات بين فريقين`;
+            }
+
+            async function shareResult() {
+                if (!finished) return;
+                const result = makeShareText();
+                try {
+                    await navigator.clipboard.writeText(result);
+                    showToast('تم نسخ نتيجتك. شاركها مع أصدقائك!');
+                } catch {
+                    const field = document.createElement('textarea');
+                    field.value = result;
+                    field.setAttribute('readonly', '');
+                    field.className = 'copy-buffer';
+                    document.body.append(field);
+                    field.select();
+                    const copied = document.execCommand('copy');
+                    field.remove();
+                    showToast(copied ? 'تم نسخ نتيجتك. شاركها مع أصدقائك!' : result.replaceAll('\n', ' '));
+                }
+            }
+
+            function showMessage(text, kind) {
+                messageLine.textContent = text;
+                messageLine.className = `message-line ${kind}`.trim();
+            }
+
+            function showToast(text) {
+                toast.textContent = text;
+                toast.classList.add('is-visible');
+                window.clearTimeout(toastTimeout);
+                toastTimeout = window.setTimeout(() => toast.classList.remove('is-visible'), 2600);
+            }
+
+            function updateStatistics() {
+                document.getElementById('playedStat').textContent = arabicDigits(gameStats.played);
+                document.getElementById('winStat0').textContent = arabicDigits(gameStats.wins[0]);
+                document.getElementById('winStat1').textContent = arabicDigits(gameStats.wins[1]);
+                document.getElementById('tieStat').textContent = arabicDigits(gameStats.ties);
+                document.getElementById('teamLabel0').textContent = teams[0].name;
+                document.getElementById('teamLabel1').textContent = teams[1].name;
+                document.getElementById('modalWins0').textContent = arabicDigits(gameStats.wins[0]);
+                document.getElementById('modalWins1').textContent = arabicDigits(gameStats.wins[1]);
+                document.getElementById('modalTies').textContent = arabicDigits(gameStats.ties);
+                document.getElementById('statsMessage').textContent = gameStats.played ? `اكتملت ${arabicDigits(gameStats.played)} مواجهات بين الفريقين.` : 'ابدأوا أول مواجهة وسجّلوا أسماء الفريقين.';
+            }
+
+            function updateCountdown() {
+                const now = new Date();
+                const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+                const remaining = Math.max(0, next - now);
+                const hours = Math.floor(remaining / 3600000);
+                const minutes = Math.floor(remaining % 3600000 / 60000);
+                const seconds = Math.floor(remaining % 60000 / 1000);
+                document.getElementById('countdown').textContent = `${arabicDigits(String(hours).padStart(2, '0'))}:${arabicDigits(String(minutes).padStart(2, '0'))}:${arabicDigits(String(seconds).padStart(2, '0'))}`;
+            }
+
+            document.addEventListener('keydown', event => {
+                if (event.ctrlKey || event.metaKey || event.altKey || document.querySelector('dialog[open]') || event.target.matches('.team-name-input')) return;
+                if (event.key === 'Enter' || event.key === 'Backspace') {
+                    event.preventDefault();
+                    handleKey(event.key);
+                } else if (glyph(event.key).length === 1 && /^[\u0621-\u064A]$/.test(normalize(event.key))) {
+                    event.preventDefault();
+                    handleKey(event.key);
+                }
+            });
+
+            document.getElementById('dailyTab').addEventListener('click', () => setMode('daily'));
+            document.getElementById('practiceTab').addEventListener('click', () => setMode('practice'));
+            document.getElementById('newPracticeButton').addEventListener('click', startNewPractice);
+            shareButton.addEventListener('click', shareResult);
+            document.getElementById('helpButton').addEventListener('click', () => document.getElementById('helpDialog').showModal());
+            document.getElementById('statsButton').addEventListener('click', () => document.getElementById('statsDialog').showModal());
+            document.getElementById('dateLabel').textContent = new Intl.DateTimeFormat('ar-SA', { day: 'numeric', month: 'long' }).format(new Date());
+            teams.forEach((team, index) => {
+                const input = document.getElementById(`teamName${index}`);
+                input.value = team.name;
+                input.addEventListener('input', () => {
+                    team.name = input.value.trim() || (index === 0 ? 'فريق الصقور' : 'فريق النسور');
+                    localStorage.setItem(`khamsa-team-name-${index}`, team.name);
+                    updateTeamPanels();
+                    updateStatistics();
+                });
+            });
+
+            makeBoard();
+            makeKeyboard();
+            loadDaily();
+            updateStatistics();
+            updateCountdown();
+            window.setInterval(updateCountdown, 1000);
+            if (!localStorage.getItem('khamsa-help-seen')) {
+                window.setTimeout(() => {
+                    document.getElementById('helpDialog').showModal();
+                    localStorage.setItem('khamsa-help-seen', '1');
+                }, 400);
+            }
+        })();
+    </script>
+</body>
+</html>

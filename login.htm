@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#edf3ed">
+    <meta name="description" content="تسجيل الدخول والتحقق التجريبي للعبة خمسة.">
+    <title>تسجيل الدخول | خمسة</title>
+    <link rel="stylesheet" href="kalima.css">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body class="auth-page">
+    <main class="auth-layout">
+        <section class="auth-story" aria-labelledby="storyTitle">
+            <a class="wordmark auth-wordmark" href="kalima.htm" aria-label="العودة إلى خمسة">
+                <span class="wordmark-tile">خ</span><span>خَمْسَة</span>
+            </a>
+            <div class="story-content">
+                <p class="eyebrow"><span class="today-dot"></span> مساحة اللاعبين</p>
+                <h1 id="storyTitle">مكانك<br>بين <em>الحروف.</em></h1>
+                <p class="story-copy">سجّل دخولك واستعدّ لتحدّي كلمة اليوم.</p>
+                <div class="letter-art" aria-hidden="true">
+                    <span class="letter-tile tile-coral">خ</span>
+                    <span class="letter-tile tile-green">م</span>
+                    <span class="letter-tile tile-yellow">س</span>
+                    <span class="letter-tile tile-blank">؟</span>
+                </div>
+            </div>
+            <p class="story-footer">خمسة أحرف. محاولة جديدة.</p>
+        </section>
+
+        <section class="auth-main" aria-label="تسجيل الدخول والتحقق">
+            <div class="auth-form-wrap">
+                <a class="mobile-wordmark wordmark" href="kalima.htm"><span class="wordmark-tile">خ</span><span>خَمْسَة</span></a>
+
+                <form class="auth-form" id="loginForm" novalidate>
+                    <p class="form-step">الخطوة ١ <span></span> تسجيل الدخول</p>
+                    <h2>أهلًا بعودتك</h2>
+                    <p class="form-description">أدخل بياناتك للمتابعة إلى التحقق.</p>
+
+                    <label class="field-label" for="email">البريد الإلكتروني</label>
+                    <input class="auth-input" id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com" required>
+
+                    <div class="password-label-row">
+                        <label class="field-label" for="password">كلمة المرور</label>
+                        <button class="text-button" id="togglePassword" type="button" aria-pressed="false">إظهار</button>
+                    </div>
+                    <input class="auth-input" id="password" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="٨ أحرف على الأقل" required>
+
+                    <p class="form-message" id="loginMessage" role="status" aria-live="polite"></p>
+                    <button class="submit-button" type="submit">متابعة <span aria-hidden="true">←</span></button>
+                    <p class="demo-note">هذه واجهة تجريبية فقط؛ لا تُرسل بياناتك إلى خادم.</p>
+                </form>
+
+                <form class="auth-form" id="verifyForm" hidden>
+                    <button class="back-button" id="backToLogin" type="button" aria-label="العودة إلى تسجيل الدخول">→ <span>تعديل بيانات الدخول</span></button>
+                    <p class="form-step">الخطوة ٢ <span></span> التحقق</p>
+                    <h2>أدخل رمز التحقق</h2>
+                    <p class="form-description">رمز من ٦ أرقام أُرسل إلى <strong id="emailPreview"></strong></p>
+
+                    <label class="field-label" for="verificationCode">رمز التحقق</label>
+                    <input class="auth-input code-input" id="verificationCode" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="٠ ٠ ٠ ٠ ٠ ٠" required>
+                    <div class="demo-code"><span class="demo-code-mark" aria-hidden="true">i</span><p>وضع تجريبي: لا يُرسل بريد فعلي. استخدم الرمز <strong dir="ltr">123456</strong>.</p></div>
+
+                    <p class="form-message" id="verifyMessage" role="status" aria-live="polite"></p>
+                    <button class="submit-button" type="submit">تحقق وتابع <span aria-hidden="true">←</span></button>
+                    <p class="demo-note">التحقق هنا محلي داخل المتصفح وليس حماية لحساب حقيقي.</p>
+                </form>
+
+                <section class="auth-form success-panel" id="successPanel" hidden aria-live="polite">
+                    <span class="success-mark" aria-hidden="true">✓</span>
+                    <p class="form-step">اكتمل التحقق التجريبي</p>
+                    <h2>جاهز للتحدّي؟</h2>
+                    <p class="form-description">تم قبول الرمز محليًا. لم يتم إنشاء جلسة دخول أو حساب.</p>
+                    <a class="submit-button continue-link" href="kalima.htm">العودة إلى اللعبة <span aria-hidden="true">←</span></a>
+                </section>
+            </div>
+            <footer class="auth-footer"><span>خمسة</span><span class="footer-asterisk">✳</span><a href="kalima.htm">العودة إلى اللعبة</a></footer>
+        </section>
+    </main>
+
+    <script>
+        (() => {
+            const loginForm = document.getElementById('loginForm');
+            const verifyForm = document.getElementById('verifyForm');
+            const successPanel = document.getElementById('successPanel');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const codeInput = document.getElementById('verificationCode');
+            const togglePassword = document.getElementById('togglePassword');
+
+            togglePassword.addEventListener('click', () => {
+                const isVisible = passwordInput.type === 'text';
+                passwordInput.type = isVisible ? 'password' : 'text';
+                togglePassword.textContent = isVisible ? 'إظهار' : 'إخفاء';
+                togglePassword.setAttribute('aria-pressed', String(!isVisible));
+            });
+
+            loginForm.addEventListener('submit', event => {
+                event.preventDefault();
+                const message = document.getElementById('loginMessage');
+                message.textContent = '';
+                if (!loginForm.reportValidity()) return;
+
+                document.getElementById('emailPreview').textContent = emailInput.value;
+                loginForm.hidden = true;
+                verifyForm.hidden = false;
+                codeInput.focus();
+            });
+
+            document.getElementById('backToLogin').addEventListener('click', () => {
+                verifyForm.hidden = true;
+                loginForm.hidden = false;
+                emailInput.focus();
+            });
+
+            codeInput.addEventListener('input', () => {
+                codeInput.value = codeInput.value.replace(/[^0-9]/g, '').slice(0, 6);
+                document.getElementById('verifyMessage').textContent = '';
+            });
+
+            verifyForm.addEventListener('submit', event => {
+                event.preventDefault();
+                const message = document.getElementById('verifyMessage');
+                if (!verifyForm.reportValidity()) return;
+                if (codeInput.value !== '123456') {
+                    message.textContent = 'الرمز غير صحيح. جرّب الرمز التجريبي الموضّح أعلاه.';
+                    codeInput.focus();
+                    return;
+                }
+
+                verifyForm.hidden = true;
+                successPanel.hidden = false;
+            });
+        })();
+    </script>
+</body>
+</html>
